@@ -1,0 +1,49 @@
+<section>
+  <div class="container-fluid"> <div class="row mt-4">
+      <div class="col-12 mb-3">   <a href="/admin/add-product" class="btn btn-success ml-auto d-block">Add product</a> 
+      </div> 
+    </div>
+    <div class="row">
+      <div class="col-12"> 
+        <div class="table-responsive"> <table class="table table-striped mt-5" id="data-table">
+            <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Title</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th> 
+                <th scope="col">Price</th>
+                <th scope="col">Image</th> 
+                <th scope="col">Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each allproducts}}
+                <tr>
+                  <th scope="row">{{this.index}}.</th>
+                  <td>{{this.name}}</td>
+                  <td>{{this.category}}</td>
+                  <td class="text-truncate" style="max-width: 200px;">{{this.description}}</td> 
+                  <td>{{this.price}}</td>
+                  <td> 
+                    <img src="/product-images/{{this.image}}" class="img-fluid" alt="Card image cap"> 
+                  </td>
+                  <td>
+                    <a class="btn btn-primary" href="/admin/edit-product/{{this._id}}">Edit</a>
+                    <a class="btn btn-danger" href="/admin/delete-product/{{this._id}}" onclick="return confirm('Are you sure to delete {{this.name}}?')">Delete</a>
+                  </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  $(function() {
+    $('#data-table').DataTable();
+  });
+</script>

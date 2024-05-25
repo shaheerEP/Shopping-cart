@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies. (You likely don't need these lines)
+ */
+// var app = require('../app');
+// var debug = require('debug')('shoppingcart:server');
+// var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+// (This part is not needed either)
+// var port = normalizePort(process.env.PORT || '3000'); 
+// app.set('port', port);
+
+// ... (Rest of the code is also unnecessary) ...
+
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+   
+    return val;
+  }
+
+  if (port >= 0) {
+   
+    return port;
+  }
+
+  return false;
+}
+
+function onError(error) {
+  
+}
+
+function onListening() {
+   
+}
+
+module.exports = { normalizePort, onError, onListening }; 

@@ -1,0 +1,46 @@
+<section>
+    <div class="container mt-5 ">
+        <h2 class="mb-5">Add products</h2>
+
+        <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Name</label>
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <div class="form-group">
+  <label for="price">Price</label>
+  <input type="text" class="form-control" id="price" name="price">
+</div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" class="form-control" id="category" name="category">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description"></textarea>
+            </div>
+             
+           <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" class="form-control-file" id="image" name="image">
+            </div>
+            
+            <button  type="submit" class="btn btn-primary mt-2 ">Submit</button>
+        </form>
+        <!-- Your table goes here -->
+    </div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+ $(document).ready(function() {
+    $('form').on('submit', function(e) {
+        if ($('#image').get(0).files.length === 0) {
+            e.preventDefault();
+            alert('Upload an image');
+        }
+    });
+});
+
+</script>

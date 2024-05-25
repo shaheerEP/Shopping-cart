@@ -1,0 +1,39 @@
+<div class="container mt-5">
+    <h2 class="text-center product-card-title">Order Details</h2> 
+    <table class="table table-striped mt-3 order-details-table"> 
+        <thead>
+            <tr> 
+                <th class="order-details-head">Date</th> 
+                <th class="order-details-head">Mobile Number</th>
+                <th class="order-details-head">Pincode</th>
+                <th class="order-details-head">Address</th>
+                <th class="order-details-head">Payment Method</th>
+                <th class="order-details-head">Total Amount</th>
+                <th class="order-details-head">Status</th> 
+                <th class="order-details-head">Action</th>
+            </tr> 
+        </thead>
+        <tbody>
+            {{#each orders}}
+            <tr> 
+                <td>{{this.submittedAt}}</td> 
+                <td>{{this.deliveryDetails.mobile}}</td> 
+                <td>{{this.deliveryDetails.pincode}}</td> 
+                <td>{{this.deliveryDetails.address}}</td>  
+                <td>{{this.payment_method}}</td> 
+                <td> ₹ {{this.totalAmount}}</td> 
+                <td class="order-status-{{this.status}}"> {{this.status}} </td> 
+                <td> 
+                    <a href="/ordered-products?id={{this._id}}">
+    <button class="btn btn-primary view-products">View Products</button>
+</a> 
+ 
+                </td> 
+           </tr> 
+           {{/each}}
+       </tbody> 
+   </table> 
+</div>
+
+
+    

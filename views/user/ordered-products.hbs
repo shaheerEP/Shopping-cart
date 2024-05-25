@@ -1,0 +1,19 @@
+<body>
+    <div class="product-details">
+        <h2 class="text-center product-card-title">Product Details</h2>
+        <div class="row mt-3">
+            {{#each orders.products}}
+                <div class="col-md-4">
+                    <div class="product-card">
+                        <img src="/product-images/{{this.image}}" class="product-card-img-top" alt="{{this.name}}">
+                        <div class="card-body">
+                            <h5 class="product-card-title">{{this.name}}</h5>
+                            <p class="product-detail-info">Price: <span class="product-price">{{this.price}}</span></p>
+                            <h6 class="product-detail-info">Quantity: {{this.quantity}}</h6>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</body>

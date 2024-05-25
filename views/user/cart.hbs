@@ -1,0 +1,112 @@
+<section>
+  <div class="container">
+    {{#if products.length}}
+        <div class="cart-list">  
+        {{#each products}}
+            <div class="cart-item" id="product-row-{{this._id}}">
+                <div class="cart-item-image">
+                <img src="/product-images/{{this.image}}">
+                </div>
+                <div class="cart-item-details"> 
+                    <h3>{{this.name}}</h3>
+                    <p class="cart-item-price">₹{{this.price}}</p>
+                    <div class="cart-item-quantity">
+                        <button class="cart-item-count mr-3" data-action="decrease" data-id="{{this._id}}">-</button>
+                        <span id="quantity-{{this._id}}">{{this.quantity}}</span>
+                        <button class="cart-item-count ml-3" data-action="increase" data-id="{{this._id}}">+</button>
+                    </div>
+                    <br>
+                    <a href="#" class="remove-btn remove-item" data-id="{{this._id}}">Remove</a> 
+               </div>
+            </div> 
+        {{/each}}
+        </div> 
+        <hr>
+        <h3 class="float-right" id="total-amount">Total Amount: ₹ {{totalAmount}}</h3>
+        <br><br>
+        <a href="/place-order" class="btn-success float-right">Place order</a>
+    {{else}}
+    
+    <div>
+      <h2>Your cart is empty!</h2>
+      <p>Looks like you haven't added any products yet. Start shopping to fill it up!</p>
+    </div>
+        {{/if}}
+  </div>
+</section>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+var $j = jQuery.noConflict();
+
+
+$j('.cart-item-count').click(function() {
+  var id = $j(this).data('id');
+  var action = $j(this).data('action');
+  $j.ajax({
+    url: '/update-cart',
+    type: 'POST',
+    data: { id, action },
+    success: function(response) {
+      // Update the quantity display
+      $j('#quantity-' + id).text(response.newQuantity);
+      
+      // Update the cart badge
+      var totalQuantity = parseInt($j('#cart-badge').text());
+      if (action === 'increase') {
+        totalQuantity += 1;
+      } else if (action === 'decrease' && totalQuantity > 0) {
+        totalQuantity -= 1;
+      }
+      $j('#cart-badge').text(totalQuantity);
+
+      // Fetch and update the total amount
+      $j.ajax({
+        url: '/get-cart-total',
+        type: 'GET',
+        success: function(response) {
+          $j('#total-amount').text('Total Amount: ₹ ' + response.totalAmount);
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+});
+$j('.remove-item').click(function(e) {
+  e.preventDefault();
+  var id = $j(this).data('id');
+  $j.ajax({
+    url: '/remove-from-cart/' + id,
+    type: 'POST',
+    success: function(response) {
+      // Remove the product row from the page
+      $j('#product-row-' + id).remove();
+      
+      // Update the cart badge
+      var totalQuantity = parseInt($j('#cart-badge').text());
+      totalQuantity -= response.removedQuantity;
+      $j('#cart-badge').text(totalQuantity);
+
+      // Calculate the total amount after removing the item
+      var totalAmount = parseFloat($j('#total-amount').text().split('₹ ')[1]);
+      var removedAmount = response.removedQuantity * response.removedPrice;
+      totalAmount -= removedAmount;
+
+      // Update the total amount
+      $j('#total-amount').text('Total Amount: ₹ ' + totalAmount.toFixed(2));
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+});
+
+
+</script>

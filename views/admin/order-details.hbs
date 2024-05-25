@@ -1,0 +1,60 @@
+<body style="background-color: rgb(252, 252, 252);">
+    <div class="container">
+        <h2 class="text-center" style="color: black(236, 225, 225, 0.952);">Order Details</h2>
+        <p>Name: {{user.name}}</p>
+        {{#if paidOrders}}
+<h3>Paid Products:</h3>
+{{#each paidOrders}}
+<div class="container" style="border: 1px solid black; margin-bottom: 20px; padding: 10px;" id="order{{@index}}">
+    <p class="mobile">Mobile: {{this.deliveryDetails.mobile}}</p>
+    <p class="address">Address: {{this.deliveryDetails.address}}</p>
+    <p class="pincode">Pincode: {{this.deliveryDetails.pincode}}</p>
+    <p class="totalAmount">Total Amount: {{this.totalAmount}}</p>
+    <div class="row">
+        {{#each this.products}}
+        <div class="col-sm-4 product">
+            <div class="card">
+                <img src="/product-images/{{this.image}}" class="card-img-top" alt="Card image cap" style="height: 200px; object-fit: contain;">
+                <div class="card-body">
+                    <h5 class="card-title name">{{this.name}}</h5>
+                    <p class="card-text quantity">Quantity: {{this.quantity}}</p>
+                    <p class="card-text description">Description: {{this.description}}</p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    <button class="btn btn-primary" onclick="window.location.href='/admin/orders/print/{{this._id}}'">Print Details</button>
+</div>
+{{/each}}
+{{/if}}
+
+        <h3>COD Products:</h3>
+        {{#each placedOrders}}
+        <div class="container" style="border: 1px solid black; margin-bottom: 20px; padding: 10px;" id="order{{@index}}">
+    <p class="mobile">Mobile: {{this.deliveryDetails.mobile}}</p>
+    <p class="address">Address: {{this.deliveryDetails.address}}</p>
+    <p class="pincode">Pincode: {{this.deliveryDetails.pincode}}</p>
+    <p class="totalAmount">Total Amount: {{this.totalAmount}}</p>
+    <div class="row">
+        {{#each this.products}}
+        <div class="col-sm-4 product">
+            <div class="card">
+                <img src="/product-images/{{this.image}}" class="card-img-top" alt="Card image cap" style="height: 200px; object-fit: contain;">
+                <div class="card-body">
+                    <h5 class="card-title name">{{this.name}}</h5>
+                    <p class="card-text quantity">Quantity: {{this.quantity}}</p>
+                    <p class="card-text description">Description: {{this.description}}</p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+  <button class="btn btn-primary" onclick="window.location.href='/admin/orders/print/{{this._id}}'">Print Details</button>
+
+</div>
+
+        {{/each}}
+    </div>
+ 
+</body>

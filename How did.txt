@@ -1,0 +1,90 @@
+1. install express in the folder by :express --view=hbs
+2. install nodemon : npm install nodemon and change in 'package.json' as "start": "nodemon ./bin/www"
+3.set up index.hbs
+   *add library of boostrab: paste starter template from 'bootstrap indroduction'
+   *Create a header and add a navbar in it.
+   *remove content in 'style.css' from from public stylesheets.
+   *design the website.
+   *Add folders of layout and partials
+   *In partials folder contain "admin-header.hbs" and "user-header.hbs".
+   *In layout folder create a "layout.hbs".
+   *set in app.js ,in which folder this layouts and partials files were made by this code in app.js:
+
+      var hbs = require('express-handlebars');
+      
+       app.engine('hbs', hbs({
+       extname:'hbs',
+       defaultLayout: 'layout',
+       layoutsDir: __dirname + '/views/layouts/',
+       partialsDir: __dirname + '/views/partials/',})); 
+       
+       or  search "How to Setup Handlebars View Engine in Node.js ?" in browser and do like that. 
+
+   *Add common layouts into 'layout.hbs'
+   *Add the partials in partial files.
+   *change the file names as admin.js and user.js and change like it all from app.js to hbs files
+   *create admin folder in views.
+   *create hbs files for add products and view products.
+   *Add table in view products
+   *Add get and render methods in js files (admin and user) to get the hbs files. must give its path.
+   *Create form for add new products .
+   *Add post method in admin.js for submit the form. 
+   *npm install express-fileupload
+   *require fileupload in app.js. with use ." var fileUpload = require('express-fileupload') and app.use(fileUpload()) "
+   
+4.Connect to mongodb:
+   
+   *create a folder 'config'
+   *craete a file inside the folder 'connection.js'
+   *require mongoose in it.
+   *run the ' node F:\Express\ShoppingCart\config\connection.js' for realise working.
+   *require the file in app.js by "const connection = require('./config/connection');"
+
+5. create a folder 'helpers' 
+6. create a file in it 'product-helpers.js' for write product related functions.
+7.require there mongoose. add productschema and product model.
+8.setup for upload image to  new folder 'product-images' 
+   a better prompt in copilot (through this code "....."  i get an image. terminal shows now " ....." 
+    then i want to save the image in the folder
+   "F:\Express\ShoppingCart\public\product-images" . how to do it?)
+9.pass the id of image which uploaded the product-images folder with 
+  the 'image' key  of new  product object when press 'submit' button .
+  with the code
+
+    "router.post('/add-product',(req,res)=>{
+    console.log(req.body);
+    console.log(req.files.image);
+
+    let image = req.files.image;
+    let uploadDir = './public/product-images/';
+    let timestamp = Date.now();
+    let imageName = timestamp + '_' + image.name;
+
+    image.mv(uploadDir + imageName, function(err) {
+      if (err)
+        return res.status(500).send(err);
+      req.body.image = imageName;
+      productHelper.addProduct(req.body);
+    });
+    });    
+10.
+11.create session:
+    *npm i express-session
+    *require in app.js : var session = require('express-session')
+    *use in app.js : app.use(session({secret:'key',
+                      resave: false,
+                      saveUninitialized: true,
+                      cookie:{maxAge:60000}}))
+    *add in login function.
+    *add 'let user = req.session.user' under get('/') and 
+     pass the user to hbs page ( res.render('user/view-products', {admin: false, allproducts: products, status: req.status,user});)
+    *add the name in user header if user.else account.
+    *change login to logout if user.
+    *set router if get '/logout' :  router.get('/logout', (req, res) => {
+                                    req.session.destroy()
+                                    res.redirect('/')
+                                    })
+                                    
+
+
+   

@@ -1,0 +1,858 @@
+
+ 
+  .light-gray-badge {
+    background-color: #f8f9fa; /* Very light gray background */
+    color: white; /* White text color */
+  }
+  .empty-cart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 50px 0;
+    margin-top: 50px; /* Adjust this value as needed */
+  }
+  
+  .empty-cart h2 {
+    font-size: 2em;
+    margin-bottom: 15px;
+  }
+  
+  .empty-cart p {
+    color: #666;
+  }
+  .checkout-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.checkout-form {
+    flex: 2;
+    padding: 1rem;
+}
+.checkout-summary {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-left: 1rem;
+}
+@media print {
+  body {
+      width: 100%;
+  }
+  .container {
+      width: auto;
+  }
+  /* Add any other styles you want for printing */
+}
+#printButton {
+  display: none;
+}
+/* ------- General Reset ------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; 
+}
+
+/* ------- Typography ------- */
+body {
+  font-family: 'Arial', sans-serif; /* Placeholder - replace with your choice */
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333; /* Dark gray */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', sans-serif; /* Placeholder */
+  font-weight: bold;
+}
+
+/* ------- Layout ------- */
+.container {
+  max-width: auto; /* Adjust as needed */
+  margin: 0 auto;
+  padding: 0 15px; /* Adjust spacing as needed */
+}
+
+/* ------- Header ------- */
+header {
+  background-color: #f0f0f0; /* Placeholder - your color choice */
+}
+
+/* ------- Navigation ------- */
+nav ul {
+  list-style-type: none;
+}
+
+nav li {
+  display: inline-block;
+}
+
+/* ------- Product Display ------- */
+/* Styles for grid or flexbox layout, individual product, etc. */ 
+
+/* ------- Footer ------- */
+footer {
+  background-color: #333;
+  color: #fff;
+}
+
+/* ------- Responsive Adjustments (Media Queries) ------- */
+@media (max-width: 768px) {
+  /* Styles for tablets */
+}
+
+@media (max-width: 480px) {
+  /* Styles for mobile phones */
+}
+/* General Styles */
+.babycart-container { /* Replace .container with your prefix */
+  max-width: 1500px;
+  margin: 20px;
+  padding: 20px; 
+}
+
+/* Product Card Styles */
+.babycart-card { 
+  border: 1px solid #EBEBEB; 
+  border-radius: 8px;       
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08);  
+  padding: 15px;
+  margin-bottom: 20px; 
+  max-width: 250px;
+}
+
+.babycart-card-img-top {
+    /* Optional: Set a default height if needed */
+  object-fit: contain;
+  border-bottom: 1px solid #EBEBEB; 
+  margin-bottom: 10px;
+    /* Added to scale image down if wider */
+  height: auto;     /* Added to allow automatic height based on aspect ratio */
+}
+
+
+/* Typography */
+.babycart-product-title { 
+  font-size: 1.2em; 
+  color: #4779bb; /* Slightly playful blue */
+  font-weight: 600;   /* Slightly bolder */
+  font-family: 'Poppins', sans-serif; /* Example font from Google Fonts */
+}
+/* Search Bar Styles */
+.search-bar input[type="text"] {
+  width: 100%; /* Make the search box responsive */
+  padding: 10px 15px;
+  margin: 10px 0; /* Some spacing */
+  border-radius: 8px; 
+  border: 1px solid #EBEBEB;  
+  float: right;
+  
+}
+
+/* Placeholder Styles */
+.search-bar input[type="text"]::placeholder {
+ color: #999;  /* Light gray placeholder text */  
+}
+
+/* Focus Styles (Optional) */
+.search-bar input[type="text"]:focus { 
+outline: none; /* Remove default focus outline */
+border-color: #aaccff; /* Light blue border on focus  */
+box-shadow: 0 0 5px rgba(170, 204, 255, 0.5); /* Subtle box shadow */
+}
+.search-bar input[type="text"] {
+  font-family: 'Poppins', sans-serif; /* Example playful font */
+  background-color: #F8F9FA;  /* A light background */
+}
+
+.babycart-product-category {
+  color: #4d4c4c;        /* Darker gray */
+  font-size: 1.0em;  
+  font-weight: 550;
+}
+
+.price {
+  color: #ec8c3e;    /* Warm orange */
+  font-weight: bold;
+  font-size: 1.1em; /* Slightly larger */
+}
+
+/* Button */
+.babycart-btn {
+  background-color: #91b6ec; /* Matches your light blue  */
+  border-color: #aaccff;
+  padding: 8px 15px;
+  border-radius: 5px;    
+  color: #fff;          /* White text */
+  font-weight: 500;    
+  background: linear-gradient(to right, #659bec 60%, #3878f0 100%);  
+}
+
+
+.babycart-btn:hover {
+  transform: translateY(-2px); /* Small upward shift on hover */
+  transition: transform 0.2s ease-out; /* Smooth transition effect */
+  background-color: #90b4e0; /* Slightly lighter blue on hover */
+  box-shadow: 0 2px 5px rgba(100, 100, 230, 0.808); /* Subtle shadow for depth */
+  color: #fff; 
+}
+
+/* Header Styles */
+.admin-header {   
+  background-color: #F0F3F8; /* Slightly warmer background */
+  border-bottom: 1px solid #D8DEE7; /* Lighter border */
+}
+
+.admin-brand { 
+  font-size: 1.4em; /* Slightly larger title */
+  font-weight: 700;   /* Bolder title */
+  color: #00658F; /* A deeper, more professional blue */
+  font-family: 'Roboto', sans-serif; /* A clean sans-serif font */
+}
+
+/* Navigation Styling */
+.admin-nav-link {
+  color: #4779bb;        /* Your playful blue used as default */
+  font-weight: 500;  /* Slightly bolder links */
+}
+
+.admin-nav-link:hover,
+.admin-nav-link.active { 
+  color: #385482;      /* Darker professional blue on hover/active */
+  text-decoration: none; /* Remove underline, cleaner look */
+}
+.admin-logo {
+  max-height: 40px; /* Adjust the height as needed */
+  margin-right: 15px; /* Add spacing between logo and title */
+}
+/* Header Styles */
+.user-header { 
+  background-color: #F8F9FA; /* A light, neutral background */
+  border-bottom: 1px solid #E0E0E0; /* Subtle border */
+  height: 50px;
+}
+
+.user-brand { 
+  font-size: 1.4em;
+  font-weight: 600;   
+  color: #385482; /* A slightly darker, professional blue */
+  padding: 1px 2px;
+}
+
+.user-nav-link {
+  color: #555;        /* Darker grey for text */
+  font-weight: 500;  /* Slightly bolder text for links */
+}
+
+.user-nav-link:hover,
+.user-nav-link.active { /* Style for active/hover state */
+  color: #4779bb;      /* Your playful blue from the baby theme */
+  text-decoration: none;
+}
+
+/* Cart Badge Appearance */
+.badge {
+  background-color: #ec8c3e; /* Your warm orange color */
+  color: #fff;
+  margin-left: 5px;
+  border-radius: 50%; /* Make it round */
+  padding: 3px 6px;  /* Add some padding */
+}
+
+/* User Account Dropdown */
+.user-dropdown-toggle { 
+  background-color: #689de2; /* Your light blue */
+  border-color: #aaccff; 
+  color:  #fff; 
+  font-family: 'Poppins', sans-serif;
+}
+.user-dropdown-toggle:hover { 
+  background-color: #5e85c5; /* Your dark, professional blue */
+  color: #fff; /* White text for contrast */
+  border-color: transparent;
+  font-family: 'Poppins', sans-serif;
+}
+.user-dropdown-menu {
+  border-color: #E0E0E0;
+}
+
+.user-dropdown-link {
+  color: #4779bb;     /* Your playful blue */
+}
+
+.user-dropdown-link:hover {
+  color: #385482;   /* Darker, professional blue */
+  text-decoration: none;  /* Remove underline for cleaner look */
+}
+
+/* Original color change on hover */
+.user-dropdown-toggle:hover { 
+  background-color: #659ffd; /* Your dark, professional blue */
+  color: #ffffff; 
+  border-color: transparent;
+  font-family: 'Poppins', sans-serif;
+}
+.navbar-toggler-icon {
+  width: 15px; 
+  height: 15px; 
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+.navbar-collapse {
+  height: auto;
+}
+
+.move-down {
+  margin-top: 120px; /* Adjust this value as needed */
+}
+
+/* Color change after clicking */
+.navbar .user-dropdown-toggle:focus, 
+.navbar .user-dropdown-toggle.clicked { 
+  background-color: #5fa1f8; /* Your playful blue */
+  color: #ffffff; 
+  border-color: #77a8e7ce; 
+  font-family: 'Poppins', sans-serif;
+}
+/* Add this to your CSS file */
+.navbar-toggler {
+  background-color: #007bff;  /* Change to your desired color */
+  color: #3f42c4;                 /* White text for contrast */
+  border-color: #007bff;       /* Adjust border color if needed */
+}
+
+/* 
+login page  */
+
+
+/* Overall Container Styling */
+.container { 
+  width: 100%; /* Limit form width for readability */
+}
+
+
+/* Card Styling */
+.card {
+  margin-top: 100px;
+  border-radius: 8px; 
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08); 
+}
+
+.card-header {
+  background-color: #F8F9FA; 
+  border-bottom: 1px solid #E0E0E0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  font-weight: 600; /* Slightly bolder title */
+}
+
+/* Form Styling */
+.form-label { 
+  color: #555; /* Your dark gray for labels */
+  font-weight: 500; 
+}
+
+.form-control {
+  border: 1px solid #EBEBEB; 
+  border-radius: 5px;
+  padding: 8px 12px;
+}
+
+/* Error Alert */
+.alert-danger {
+  background-color: #ffe8e8; /* A light red background */
+  color: #ec8c3e;  /* Use your orange color for the text */
+  border-color: #f5c6cb; /* A slightly darker red border */
+  border-radius: 5px;
+  padding: 10px 15px; 
+  margin-bottom: 15px;
+}
+/* Submit Button */
+.btn-primary { 
+  background: linear-gradient(to right, #659bec 60%, #3878f0 100%); 
+  border: none;
+  padding: 10px 25px; 
+  border-radius: 5px;
+  color: #fff; 
+  font-weight: 500; 
+}
+
+.btn-primary:focus {
+  border-color: #3878f0; /* Change to your desired blue */
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px); /* Move down 2px on hover */
+  transition: transform 0.2s ease-out; /* Smooth animation */
+}
+
+.btn-primary:active {
+  transform: translateY(1px); /* Move up 1px on click (active state)*/
+  transition: transform 0.1s ease-in; /* Quicker animation */
+  border-color: #3878f0b2; /* Change to your desired blue */
+}
+
+/* Additional Links */
+.form-check-label, 
+a { /* Applies to both "Remember me" and "Forgot Password" */
+  color: #4779bb; /* Your playful blue */
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Cart page */
+
+/* Overall Table Styling */
+.table {
+  border-collapse: collapse; /* Standard table behavior */
+  width: 100%; 
+}
+
+.table th,
+.table td {
+  border: none;
+  padding: 12px 15px;
+  text-align: left;
+  vertical-align: middle; 
+}
+
+.table thead th {
+  background-color: #F8F9FA; 
+  color: #385482; /* Dark professional blue for header */
+  font-weight: 600;
+}
+
+/* Image Styling */
+.table td img {
+  max-width: 70px; /* Limit image width */
+  max-height: 70px;
+  object-fit: contain; /* Maintain aspect ratio */
+  border: none; 
+}
+
+/* Quantity Buttons  */
+.cart-item-count {
+  background-color: #EBEBEB; 
+  color: #385482;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.cart-item-count:hover {
+  background-color: #4779bb; /* Playful blue on hover */
+  color: #fff;
+}
+
+
+
+/* Total Amount */
+#total-amount {
+  font-size: 1.2em; 
+  font-weight: 600;
+  color: #4779bb; /* Your playful blue */
+} 
+
+/* Place Order Button */
+.btn-success {
+  background: linear-gradient(to right, #659bec 60%, #3878f0 100%); 
+  color: #fff; 
+  font-weight: 500; 
+  border: none;
+  padding: 10px 25px;
+  border-radius: 5px;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px); 
+  transition: transform 0.2s ease-out; 
+}
+
+/* Empty Cart Message */
+.container > div {
+  text-align: center;  
+}
+
+.container > div h2 {
+  
+  color: #385482;
+  font-weight: 600;
+}
+
+.responsive-table {
+  width: 100%; /* Ensures table stretches to fit container */
+}
+
+.table td, .table th {
+  padding: 12px 18px; /* Adjust padding as needed */
+}
+.remove-btn {
+  background-color: #ec8c3e; /* Your orange color */
+  color: #fff;
+  border: none;
+  padding: 5px 12px; /* Adjust padding if needed */
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer; /* Indicates interactivity on hover */
+}
+
+.remove-btn:hover {
+  background-color: #cc7b30; /* Darker orange on hover */
+  transition: background-color 0.2s ease-in-out; /* Smooth hover transition */
+  color: #fff;
+}
+
+/* Using Parent Row */
+.no-border-row {
+  border: none !important; /* Removes all borders */
+}
+
+/* Using Adjacent Sibling Selector */
+.remove-btn + tr {
+  border: none !important; /* Removes all borders */
+}
+.table tbody tr {
+  border: none; 
+}
+
+/* Overall  Styles */
+.product-details {
+  margin: 20px auto;
+}
+.product {
+  flex: 1;  /* Allow products to grow and fill space*/
+  min-width: 200px;  /* Set a minimum width to prevent items from being too small */
+}
+.row {
+  display: flex;
+  flex-wrap: wrap; 
+}
+
+.product-card {
+  display: flex; /* Enable flexbox for the card */
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+  border: 1px solid #EBEBEB; 
+  border-radius: 8px;       
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px; 
+}
+
+/* Optional: Adjust image size if needed */
+.product-card-img-top {
+  width: 100%; /* Adjust width as needed */
+  height: 200px; 
+  object-fit: contain;
+  border-bottom: 1px solid #EBEBEB; 
+}
+/* Typography */
+.product-card-title { 
+  font-size: 1.2em; 
+  color: #4779bb; /* Slightly playful blue */
+  font-weight: 600;  
+}
+
+.product-detail-info { /* For price and quantity */
+  color: #555;       
+}
+
+.product-price {
+  font-weight: bold;
+  color: #ec8c3e;    /* Warm orange */
+}
+/* Order Details Table */
+.order-details-table { 
+  border-collapse: collapse;
+  width: 100%; 
+  margin: 20px auto; /* Center the table */
+}
+
+.order-details-table th {
+  background-color: #F0F3F8;  /* Light background for headers */
+  color: #385482;           /* Darker professional blue */
+  font-weight: 600;  
+  padding: 12px 8px;        /* Add spacing */
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.order-details-table td {
+  padding: 8px;            
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.order-details-table tbody tr:nth-child(odd) {
+  background-color: #fafafa; /* Subtle striping */
+}
+
+/* Status Styles (Optional) */
+.order-status-pending {
+color: #f0ad4e;  /* A warm, pending orange */
+}
+.order-status-delivered {
+color: #5cb85c;  /* Success green */
+} 
+
+/* View Products Button */
+.view-products {
+  background-color: #aaccff; /* Your light blue */
+  border-color: #aaccff;  
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.view-products:hover {
+  background-color: #90b4e0; /* Slightly darker blue on hover */
+}
+/* Overall Checkout Styles */
+.checkout-container {
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #EBEBEB; 
+  border-radius: 8px;
+}
+
+/* Form Styles */
+.checkout-form label {
+  font-weight: 500;  /* Slightly bolder labels */
+}
+
+.checkout-form input,
+.checkout-form textarea {
+  margin-top: 5px;  
+  border-radius: 4px;
+}
+
+
+
+/* Checkout Button */
+#checkout-button {
+  background-color: #aaccff; /* Your light blue */
+  border-color: #aaccff;
+  padding: 8px 15px;
+  border-radius: 4px;
+  color: #fff;         
+  font-weight: 600;   
+}
+
+#checkout-button:hover {
+  background-color: #90b4e0; /* Slightly darker on hover */
+}
+
+.payment-separator {
+  margin-right: 24px;
+  margin-top: 15px; 
+  margin-bottom: 15px;
+}
+.text-center { /* Assuming this class is on the heading */
+  font-family: 'Poppins', sans-serif; /* Example font */
+  color: #ec8c3e;    /* Example theme color */
+}
+/* Overall Signup Container */
+.signup-container {
+  margin: 20px auto;
+  padding: 30px;
+  background-color: #F8F9FA; /* A light background */
+  border-radius: 8px;       
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08);  
+}
+
+/* Form Styles */
+.signup-form label {
+  font-weight: 500;  /* Slightly bolder labels */
+}
+
+.signup-form input {
+  margin-top: 5px;  
+  border-radius: 4px;
+}
+
+/* Button Styles */
+.signup-button { /* Assuming this will be a class on the button */
+  background-color: #aaccff; /* Your light blue */
+  border-color: #aaccff;
+  padding: 8px 15px;
+  border-radius: 4px;
+  color: #fff;         
+  font-weight: 600;   
+}
+
+.signup-button:hover {
+  background-color: #90b4e0; /* Slightly darker on hover */
+}
+.signup-container { /* Assuming your main container has this class */
+  text-align: center;
+}
+/* Product Card Styles */
+.babycart-card {
+  border: 1px solid #EBEBEB; 
+  border-radius: 8px;       
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08);  
+  padding: 15px;
+  margin-bottom: 20px; 
+}
+
+.babycart-card-img-top {
+height: 200px; 
+object-fit: contain;
+border-bottom: 1px solid #EBEBEB; 
+margin-bottom: 10px;
+}
+
+/* Typography */
+.babycart-product-title { 
+  font-size: 1.2em; 
+  color: #4779bb; /* Slightly playful blue */
+  font-weight: 600;   
+}
+
+.babycart-product-description {
+  color: #555; /* Darker gray */
+  font-size: 0.9em;  
+}
+
+.price {
+  color: #ec8c3e;    /* Warm orange */
+  font-weight: bold;
+  font-size: 1.1em; /* Slightly larger */
+}
+
+/* Button */
+
+.babycart-btn:active {
+  transform: translateY(1px); /* Move up 1px on click (active state)*/
+  transition: transform 0.1s ease-in; /* Quicker animation */
+  border-color: #3878f0b2; /* Change to your desired blue */
+}
+.babycart-btn:focus {
+  border-color: #3878f0; /* Change to your desired blue */
+}
+
+.order-confirmation-container { 
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #F8F9FA; /* A light background */
+  border-radius: 10px;       
+  box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);  
+  text-align: center;
+}
+
+.order-confirmation-message { 
+  font-size: 1.6em; 
+  color: #385482; /* A slightly darker, professional blue */
+  font-weight: 600;   
+  margin-bottom: 20px;
+}
+.order-confirmation-message {
+  color: #ec8c3e;    /* Warm orange */
+  font-family: 'Poppins', sans-serif; /* Example playful font */
+} 
+/* Overall Container */
+.add-product-container {
+  margin: 20px auto;
+  padding: 30px;
+  background-color: #F8F9FA; /* A light background */
+  border-radius: 8px;       
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08);  
+}
+
+/* Form Styles */
+.add-product-form label {
+  font-weight: 500;  /* Slightly bolder labels */
+}
+
+.add-product-form input,  
+.add-product-form textarea {
+  margin-top: 5px;  
+  border-radius: 4px;
+}
+
+/* Button Styles */
+.add-product-button { /* Assuming a class on your submit button */  
+  background-color: #aaccff; /* Your light blue */
+  border-color: #aaccff;
+  padding: 8px 15px;
+  border-radius: 4px;
+  color: #fff;         
+  font-weight: 600;   
+}
+
+.add-product-button:hover {
+  background-color: #90b4e0; /* Slightly darker on hover */
+}
+h2.mb-5 { /* Assuming this class is on the heading */
+  font-family: 'Poppins', sans-serif; /* Example font */
+  color: #ec8c3e; /* Example theme color */
+}
+/* Cart List Styles */
+.cart-list {
+  margin-top: 20px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center; /* Vertically align content */
+  border: 1px solid #EBEBEB;
+  border-radius: 8px;
+  padding: 15px; 
+  margin-bottom: 15px; 
+}
+
+.cart-item-image {
+  width: 80px; /* Adjust as needed */
+  margin-right: 20px;
+}
+
+.cart-item-image img {
+  max-width: 100%; 
+  height: auto; 
+  border-radius: 5px; 
+}
+
+.cart-item-details {
+  flex: 1; /* Fill available space */
+}
+
+.cart-item-price {
+  color: #ec8c3e; /* Your warm orange */
+  font-weight: 600;
+}
+
+/* Add more styles as needed for quantity controls, remove button, etc. */
+.cart-item-count { 
+  background: linear-gradient(to right, #659bec 60%, #3878f0 100%); 
+  border: none;
+  padding: 5px 15px; 
+  border-radius: 5px;
+  color: #fff; 
+  font-weight: 500; 
+  font-size: 20px;
+}
+
+.cart-item-count:focus {
+  border-color: #3878f0; /* Change to your desired blue */
+}
+
+.cart-item-count:hover {
+  transform: translateY(-2px); /* Move down 2px on hover */
+  transition: transform 0.2s ease-out; /* Smooth animation */
+}
+
+.cart-item-count:active {
+  transform: translateY(1px); /* Move up 1px on click (active state)*/
+  transition: transform 0.1s ease-in; /* Quicker animation */
+  border-color: #3878f0b2; /* Change to your desired blue */
+}
+
+.sticky-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* This ensures the header stays on top of other elements */
+}

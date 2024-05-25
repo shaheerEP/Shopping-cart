@@ -1,0 +1,33 @@
+<style>
+   
+</style>
+<body style="background-color: rgb(252, 252, 252);">
+    <div class="container">
+        <h2  style="color: black(236, 225, 225, 0.952);">Order Details</h2>
+        <p>Name: {{user.name}}</p>
+        <p>Mobile: {{order.deliveryDetails.mobile}}</p>
+        <p>Address: {{order.deliveryDetails.address}}</p>
+        <p>Pincode: {{order.deliveryDetails.pincode}}</p>
+        <p>Payment Method: {{order.payment_method}}</p>
+        <p>Total Amount: {{order.totalAmount}}</p>
+        <h3>Products:</h3>
+        {{#each order.products}}
+        
+           
+            <div class="card-body">
+                <h5 class="card-title">{{this.name}}</h5>
+                <p class="card-text">Quantity: {{this.quantity}}</p>
+                
+            </div>
+        
+        {{/each}}
+         <button id="printButton" class="btn btn-primary">Print</button>
+    </div>
+      
+
+ <script>
+        document.getElementById('printButton').addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+</body>

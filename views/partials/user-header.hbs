@@ -1,0 +1,100 @@
+<header class="sticky-header">
+<nav class="navbar navbar-expand-lg user-header">
+     <img src="https://i.imgur.com/wUQHzk9.png" alt="Your company logo" class="admin-logo"> 
+  <a class="navbar-brand user-brand" href="/">Shopping Cart </a>
+   {{#if user}}
+      <li class="nav-item">
+        <a class="nav-link user-nav-link" href="/cart"><i class="fas fa-shopping-cart" style="font-size: 22px;"></i> 
+<span id="cart-badge" class="badge">{{totalQuantity}}</span>{{/if}}</a>
+      </li> 
+ <button class="navbar-toggler  btn-primary" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+  
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+     
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link user-nav-link" href="/">Products <span class="sr-only">(current)</span></a>
+      </li>
+      {{#if user}}
+      <li class="nav-item">
+        <a class="nav-link user-nav-link" href="/orders"><i class="fas fa-clipboard-list"></i> </a>
+      </li>
+      {{/if}}
+         </ul>
+
+
+   <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle user-dropdown-toggle:focus user-dropdown-toggle.clicked user-dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+   {{#if user}}
+   <i class="fas fa-user"></i> 
+   {{else}}
+   <i class="fas fa-user-circle"></i> Account
+   {{/if}}
+  </button>
+  <div class="dropdown-menu user-dropdown-menu" aria-labelledby="dropdownMenuButton">
+{{#if user}}
+<a class="btn btn-primary"><i class="fas fa-user"></i>{{user.name}}</a>
+<a class="dropdown-item user-dropdown-link" href="/logout">Logout</a>
+   
+   {{else}}
+   <a class="dropdown-item user-dropdown-link" href="/login">Login</a>
+  <a class="dropdown-item user-dropdown-link" href="/signup">Signup</a>
+   {{/if}}
+  </div>
+</div>
+  </div>
+  
+</nav>
+
+</header>
+
+<script>
+function searchProducts() {
+  var input, filter, productContainer, products, i, txtValue;
+  input = document.getElementById('searchInput');
+  filter = input.value.toUpperCase();
+  productContainer = document.getElementById('productContainer');
+  products = document.getElementsByClassName('product');
+  
+  // Convert to array for easier manipulation
+  products = Array.from(products);
+
+  // Sort the products based on the search input
+  products.sort(function(a, b) {
+    txtValueA = a.getAttribute('data-name') + a.getAttribute('data-price') + a.getAttribute('data-description') + a.getAttribute('data-category');
+    txtValueB = b.getAttribute('data-name') + b.getAttribute('data-price') + b.getAttribute('data-description') + b.getAttribute('data-category');
+
+    if (txtValueA.toUpperCase().indexOf(filter) > -1 && txtValueB.toUpperCase().indexOf(filter) === -1) {
+      return -1; // a comes first
+    } else if (txtValueA.toUpperCase().indexOf(filter) === -1 && txtValueB.toUpperCase().indexOf(filter) > -1) {
+      return 1; // b comes first
+    } else {
+      return 0; // no change in order
+    }
+  });
+
+  // Clear the product container
+  while (productContainer.firstChild) {
+    productContainer.removeChild(productContainer.firstChild);
+  }
+
+  // Append the sorted products back to the product container
+  for (i = 0; i < products.length; i++) {
+    productContainer.appendChild(products[i]);
+  }
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function() { 
+    const accountButton = document.querySelector('.navbar .user-dropdown-toggle');
+
+    accountButton.addEventListener('click', function() {
+        this.classList.add('clicked'); 
+    });
+});
+
+</script>

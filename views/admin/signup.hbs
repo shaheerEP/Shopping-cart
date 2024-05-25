@@ -1,0 +1,33 @@
+
+  <div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row">
+      
+        <h1 class="text-center mb-4">Create new account</h1>
+      
+      <div class="col-md-6">
+        <form  action="/admin/signup"  method="post" >
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+           <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp">
+
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+        </div>
+          <button type="submit" class="btn btn-primary w-100">sign Up</button>
+          <div class="text-center mt-3">
+            <a href="#">Already have account? Login here</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

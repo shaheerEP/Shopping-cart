@@ -1,0 +1,59 @@
+<section class="container">
+  <div class="row mt-4">
+    <h2>Edit Product</h2>
+  </div>
+
+  <form action="/admin/edit-product/{{_id}}" method="POST" enctype="multipart/form-data">
+    {{#if csrfToken}}
+      <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    {{/if}}
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{name}}">
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category</label>
+      <input type="text" class="form-control" id="category" name="category" value="{{category}}">
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea class="form-control" id="description" name="description">{{description}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input type="text" class="form-control" id="price" name="price" value="{{price}}">
+    </div>
+
+<label for="image">Image (optional)</label>
+   <div class="form-group">
+
+  <img src="/product-images/{{image}}" class="" alt="Card image cap" style="height: 100px; object-fit: contain;" id="imgView">
+
+  <input type="file" class="form-control-file" id="image" name="image" onchange="viewImage(event)" >
+
+  <p class="text-muted">Leave blank to keep the current image.</p>
+</div>
+
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+</section>
+
+<script>
+
+function viewImage(event){          
+
+ document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
+ }  
+
+
+
+</script>
+
+
+
+                              

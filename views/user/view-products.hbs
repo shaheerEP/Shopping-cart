@@ -1,0 +1,119 @@
+<section class="babycart-container">
+  <div class="container"> 
+    <div class="row search-bar"> 
+      <div class="search-wrapper mt-5">
+    <input type="text" id="searchInput" class="search-bar" placeholder="Search products..." onkeyup="searchProducts()" />
+</div>
+
+    <div class="row" id="productContainer"> 
+   
+      {{#each allproducts}}   
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 product" data-name="{{this.name}}" data-price="{{this.price}}" data-description="{{this.description}}" data-category="{{this.category}}"> 
+          <div class="babycart-card" >
+            <img src="/product-images/{{this.image}}" class="babycart-card-img-top img-fluid" alt="Card image cap"> 
+          
+              <div class="card-body">
+                <h5 class="babycart-product-title"> {{this.name}} </h5>
+                <p class="babycart-product-category " style="max-width: 300px;"> {{this.category}} </p>
+                <p class="babycart-product-description " style="max-width: 300px;"> {{this.description}} </p>
+                <button onclick="addToCart('{{this._id}}')" class="btn babycart-btn">
+                  <i class="fas fa-shopping-cart"></i> Add to cart 
+                </button>
+                <span class="text-muted ml-3">₹<span class="price">{{this.price}}</span></span>
+              </div>
+            </div> 
+          </div>
+       {{/each}} 
+     </div> 
+   </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+<script>
+var $j = jQuery.noConflict();
+
+function addToCart(id) {
+  $j.ajax({
+    url: '/verify-login',
+    type: 'GET',
+    success: function(response) {
+      if(response.loggedIn) {
+        $j.ajax({
+          url: '/add-to-cart/' + id,
+          type: 'GET',
+          success: function(response) {
+            // Update the cart badge with the new total quantity
+            $j('#cart-badge').text(response.totalQuantity);
+          },
+          error: function(error) {
+            console.log(error);
+          }
+        });
+      } else {
+        window.location.href = '/login';
+      }
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+}
+
+function searchProducts() {
+  var input, filter, productContainer, products, i, txtValue;
+  input = document.getElementById('searchInput');
+  filter = input.value.toUpperCase();
+  productContainer = document.getElementById('productContainer');
+  products = document.getElementsByClassName('product');
+
+  // Convert to array for easier manipulation
+  products = Array.from(products);
+
+  // Sort the products based on the search input
+  products.sort(function(a, b) {
+    txtValueA = a.getAttribute('data-name') + a.getAttribute('data-price') + a.getAttribute('data-description') + a.getAttribute('data-category');
+    txtValueB = b.getAttribute('data-name') + b.getAttribute('data-price') + b.getAttribute('data-description') + b.getAttribute('data-category');
+
+    if (txtValueA.toUpperCase().indexOf(filter) > -1 && txtValueB.toUpperCase().indexOf(filter) === -1) {
+      return -1; // a comes first
+    } else if (txtValueA.toUpperCase().indexOf(filter) === -1 && txtValueB.toUpperCase().indexOf(filter) > -1) {
+      return 1; // b comes first
+    } else {
+      return 0; // no change in order
+    }
+  });
+
+  // Clear the product container
+  while (productContainer.firstChild) {
+    productContainer.removeChild(productContainer.firstChild);
+  }
+
+  // Append the sorted products back to the product container
+  for (i = 0; i < products.length; i++) {
+    productContainer.appendChild(products[i]);
+  }
+}
+
+
+$(document).ready(function() {
+    $('.navbar-toggler').on('click', function() {
+        $('.babycart-container').toggleClass('move-down');
+    });
+});
+
+$(".babycart-btn").click(function() {
+  $.ajax({
+    url: '/verifyLogin', // Endpoint where your `verifyLoggin` function is called
+    type: 'GET',
+    success: function(data) {
+      // If user is logged in, add to cart
+      addToCart('{{this._id}}');
+    },
+    error: function() {
+      // If user is not logged in, redirect to login page
+      window.location.href = '/login';
+    }
+  });
+});
+
+</script>

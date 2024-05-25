@@ -1,0 +1,41 @@
+<body style="background-color: rgb(252, 252, 252);">
+    <div class="container">
+        <h2 class="text-center" style="color: black(236, 225, 225, 0.952);">Order Details</h2>
+        <table id="orderDetails" class="display table table-striped mt-3" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Product Image</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>User (Mobile Number)</th>
+                    <th>Order Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through the orders and create a table row for each order -->
+                {{#each orders}}
+                {{#each this.products}}
+                <tr>
+                    <td><img src="/product-images/{{this.image}}" class="card-img-top" alt="Card image cap" style="height: 50px; object-fit: contain;"></td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.quantity}}</td>
+                    <td>{{../user.name}} ({{../deliveryDetails.mobile}})</td>
+                    <td>{{formatDateToIST ../submittedAt}}</td>
+                    <td><a href="/admin/orders/details/{{../user._id}}" class="btn btn-primary">Details</a></td>
+
+                </tr>
+                {{/each}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <script>
+    $(document).ready(function() {
+        $('#orderDetails').DataTable({
+            responsive: true,
+            "order": [[ 4, "desc" ]]
+        });
+    } );
+    </script>
+</body>
