@@ -1,7 +1,7 @@
 var dotev = require('dotenv').config();
 // ...other imports...
 const { normalizePort, onError, onListening } = require('./bin/www');
-const http = require('http'); // Import the http module
+const http = require('http'); // Import the http module 
 
 // ...rest of your app.js code...
 
@@ -17,8 +17,17 @@ var app = express();
 var fileUpload=require('express-fileupload') 
 const connection = require('./config/connection');
 var session = require('express-session')
+const flash = require('connect-flash');
 const helpers = require('./config/handlebars-helpers');
-const Razorpay = require('razorpay'); 
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.CLOUD_API_KEY , 
+  api_secret: process.env.CLOUD_SECRET_KEY,
+  secure: true // Recommended for production
+});
+ 
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const connectionString = process.env.DATABASE_URL;
@@ -62,6 +71,10 @@ app.use(session({
       maxAge: 60000000 // 1 hour in milliseconds 
   } 
 }));
+
+
+app.use(flash());
+
 
 // ... (Rest of your route logic) ...
 app.use('/', usersRouter);

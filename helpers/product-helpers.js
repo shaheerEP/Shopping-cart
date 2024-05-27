@@ -39,20 +39,23 @@ const addProduct = async (productData)=> {
           console.error('Error fetching products:', error);
         }
       }
-    
+      
       const deleteProduct = async (prodId) => {
-  try {
-    const result = await Product.deleteOne({ _id: prodId });
-    if (result.deletedCount === 0) {
-      console.log('No product found with the given id');
-    } else {
-      console.log('Product deleted successfully');
-    }
-  } catch (error) {
-    console.error(error);
-  }
-  
-}
+        try {
+          const product = await Product.findOne({ _id: prodId });
+          if (!product) {
+            console.log('No product found with the given id');
+            return null;
+          } else {
+            await Product.deleteOne({ _id: prodId });
+            console.log('Product deleted successfully');
+            return product;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      
 
 const  getProductDetails = async (prodId) => {
   try {
