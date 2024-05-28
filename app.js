@@ -14,12 +14,13 @@ var hbs = require('express-handlebars');
 var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/admin'); 
 var app = express();
-var fileUpload=require('express-fileupload') 
+
 const connection = require('./config/connection');
 var session = require('express-session')
 const flash = require('connect-flash');
 const helpers = require('./config/handlebars-helpers');
 const cloudinary = require('cloudinary').v2;
+const fileUpload = require('express-fileupload');
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME, 
@@ -50,7 +51,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileUpload());
+app.use(fileUpload({
+  useTempFiles : true, // Enable temporary file storage
+  tempFileDir : '/tmp/' // Specify the temporary directory (you can adjust this)
+}));
 
 mongoose.connect(connectionString, {
   useNewUrlParser: true,

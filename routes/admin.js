@@ -94,14 +94,13 @@ router.post('/login', async (req, res) => {
   res.redirect('/admin');
 });
 
-router.get('/', verifyLoggin,function(req, res, next) {
+router.get('/', verifyLoggin, function(req, res, next) {
   productHelpers.getAllProducts().then((allproducts) => {
    
-allproducts.forEach(product => {
-  
-    product.imageType = 'file';
-    
-});
+    allproducts.forEach(product => {
+      // Add a flag to indicate Cloudinary image
+      product.isCloudinaryImage = product.image.startsWith('https://'); 
+    });
 
     const products = allproducts.map((product, index) => ({
       _id :product._id,
@@ -110,13 +109,16 @@ allproducts.forEach(product => {
       description: product.description,
       image: product.image,
       price: product.price,
-      index: index + 1 
+      index: index + 1,
+      isCloudinaryImage: product.isCloudinaryImage // Include the flag in the mapped object
     }));
 
-    
-res.render('admin/view-products', {admin: true, allproducts: products});
-}).catch((error) => {console.error('Error fetching products:', error);});
-    });
+    res.render('admin/view-products', { admin: true, allproducts: products });
+  }).catch((error) => {
+    console.error('Error fetching products:', error);
+  });
+});
+
 
 
 router.get('/add-product',verifyLoggin, function(req, res, next) {
@@ -125,110 +127,85 @@ router.get('/add-product',verifyLoggin, function(req, res, next) {
 })
 
 
-router.post('/add-product', verifyLoggin, (req, res) => {
+router.post('/add-product', verifyLoggin, async (req, res) => {
+  console.log(req.files)
   if (!req.files || Object.keys(req.files).length === 0) {
       req.flash('error', 'No files were uploaded.');
       return res.redirect('/add-product');
   }
 
   const productImage = req.files.image;
+  let imageName;
 
-  // Check if the environment is production (Vercel) or development (local)
-  if (process.env.NODE_ENV === 'production') {
-      // Upload to Cloudinary if in production
-      cloudinary.uploader.upload(productImage.tempFilePath, { folder: 'product-images' }, (error, result) => {
-          if (error) {
-              console.error("Error uploading image:", error); // Log the error for analysis
-              req.flash('error', 'There was a problem uploading the product image.');
-              return res.redirect('/add-product'); 
-          } else {
-              req.body.image = result.secure_url; 
-              productHelpers.addProduct(req.body) 
-                  .then(() => {
-                      res.redirect('/admin'); 
-                  })
-                  .catch(err => {
-                      console.error("Error adding product to database:", err);
-                      req.flash('error', 'There was a problem saving the product.');
-                      res.redirect('/add-product');
-                  }); 
-          }
-      });
-  } else {
-      // Save to local folder if in development
-      let uploadDir = './public/product-images/';
-      let timestamp = Date.now();
-      let imageName = timestamp + '_' + productImage.name;
+  // Upload to Cloudinary regardless of the environment
+  try {
+    console.log("hai",productImage.tempFilePath,"hai")
+    const result = await cloudinary.uploader.upload(productImage.tempFilePath, { folder: 'product-images' });
+    imageName = result.secure_url;
+    
+  } catch (error) {
+    console.error("Error uploading image:", error); // Log the error for analysis
+    req.flash('error', 'There was a problem uploading the product image.');
+    return res.redirect('/add-product'); 
+  }
 
-      productImage.mv(uploadDir + imageName, function(err) {
-          if (err) {
-              console.error("Error uploading image:", err); // Log the error for analysis
-              req.flash('error', 'There was a problem uploading the product image.');
-              return res.redirect('/add-product'); 
-          } else {
-              req.body.image = imageName; // Store the local image path
-              productHelpers.addProduct(req.body) 
-                  .then(() => {
-                      res.redirect('/admin'); 
-                  })
-                  .catch(err => {
-                      console.error("Error adding product to database:", err);
-                      req.flash('error', 'There was a problem saving the product.');
-                      res.redirect('/add-product');
-                  }); 
-          }
-      });
+  req.body.image = imageName; // Store the image path (Cloudinary URL)
+
+  try {
+    await productHelpers.addProduct(req.body);
+    res.redirect('/admin'); 
+  } catch (err) {
+    console.error("Error adding product to database:", err);
+    req.flash('error', 'There was a problem saving the product.');
+    return res.redirect('/add-product');
   }
 });
+
+
 
 
 router.get('/delete-product/:id', verifyLoggin, async (req, res) => {
   try {
-    const prodId = req.params.id;
+      const prodId = req.params.id;
 
-    if (!req.session.adminLoggedin) {
-      return res.status(403).json({ success: false, error: 'Unauthorized access' });
-    }
-
-    if (req.session.adminCart) {
-      req.session.adminCart = req.session.adminCart.filter(item => item.productId !== prodId);
-    }
-
-    const product = await productHelpers.deleteProduct(prodId);
-
-    if (product) {
-      if (process.env.NODE_ENV === 'production') {
-        // Delete from Cloudinary if in production
-        let publicId = path.basename(product.image, path.extname(product.image));
-        cloudinary.uploader.destroy('product-images/' + publicId, function(error, result) {
-          console.log(result, error);
-        });
-      } else {
-        // Delete from local folder if in development
-        fs.unlink(path.join('public', 'product-images', product.image), (err) => {
-          if (err) {
-            console.error("Error deleting image:", err);
-          }
-        });
+      if (!req.session.adminLoggedin) {
+          return res.status(403).json({ success: false, error: 'Unauthorized access' });
       }
-    }
 
-    req.flash('success', 'Product deleted successfully'); // Optional: Flash a success message
-    res.redirect('/admin');
+      // Fetch the product details (including the image URL) from the database
+      const product = await productHelpers.getProductDetails(prodId);
+
+      if (!product) {
+          req.flash('error', 'Product not found');
+          return res.redirect('/admin');
+      }
+
+      // Extract the Cloudinary public ID from the image URL
+      const publicId = product.image.match(/\/product-images\/([^.]+)/)[1]; // Assuming 'product-images' is your Cloudinary folder
+  
+      // Delete product from the database
+      await productHelpers.deleteProduct(prodId);
+
+      // Delete the image from Cloudinary
+      cloudinary.uploader.destroy('product-images/' + publicId, (error, result) => {
+          if (error) {
+              console.error('Error deleting image from Cloudinary:', error);
+              req.flash('error', 'Error deleting image from Cloudinary'); // Add flash message for error
+          } else {
+              console.log('Image deleted from Cloudinary:', result);
+              req.flash('success', 'Product and image deleted successfully'); // Add flash message for success
+          }
+
+          res.redirect('/admin');
+      });
+
   } catch (error) {
-    console.error('Error in delete-product route:', error);
-
-    // Determine if the error is related to the product not being found
-    if (error.message === 'No product found') {
-      req.flash('error', 'Product not found');
-    } else {
-      req.flash('error', 'Error deleting product');
-    }
-
-    res.redirect('/admin');
+      console.error('Error in delete-product route:', error);
+      req.flash('error', 'Error deleting product'); // General error message for other errors
+      res.redirect('/admin');
   }
 });
- 
+
 router.get('/edit-product/:id', verifyLoggin, async (req, res) => {
   try {
     const productId = req.params.id;
