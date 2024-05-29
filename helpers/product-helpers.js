@@ -67,6 +67,11 @@ const  getProductDetails = async (prodId) => {
   }
 }
 
+const isLocalImage = function(image) {
+  return !image.startsWith('https://');
+};
+
+
  const updateProduct =async (productId, productData) =>{
   try {
     // Get the current product data
@@ -96,48 +101,13 @@ module.exports = {
   getAllProducts,
   deleteProduct,
   getProductDetails,
-  updateProduct
+  updateProduct,
+  isLocalImage
   // More exports...
 };
 
-const totalOrdersOfWholeProducts = [
-  {
-    $addFields: { // New stage to convert strings to ObjectIds
-      productObjectIds: {
-        $map: {
-          input: '$products',
-          as: 'productId',
-          in: { $toObjectId: '$$productId' }
-        }
-      }
-    }
-  },
-  {
-    $lookup: {
-      from: 'products',
-      localField: 'productObjectIds', // Use the converted array of ObjectIds
-      foreignField: '_id',
-      as: 'productDetails'
-    }
-  },
-  
-  {
-    $unwind: '$productDetails' // Unwind the joined product details array
-  },
-  {
-    $group: {
-      _id: '$productDetails.name', // Group by product name (assuming name exists in Product schema)
-      totalOrders: { $sum: 1 } // Count the occurrences (orders) for each product
-    }
-  },
-  {
-    $project: { // Project desired fields
-      _id: 0, // Exclude unnecessary _id field
-      productName: '$_id', // Rename grouped field to 'productName'
-      totalOrders: '$totalOrders'
-    }
-  }
-];
+
+
 
 // Cart.aggregate(totalOrdersOfWholeProducts)
 //   .then(results => {

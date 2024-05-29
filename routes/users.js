@@ -6,7 +6,9 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const userHelpers = require('../helpers/user-helpers');
 const {Order,User} = require('../helpers/schema') 
- 
+const cloudinary = require('cloudinary').v2;
+const path = require('path');
+const fs = require('fs');
 // let User; 
 // try {
 //   User = mongoose.model('User');
@@ -33,27 +35,45 @@ router.get('/verify-login', verifyLoggin, function(req, res) {
 
 
 
+
+
 router.get('/', async function(req, res, next) {
-  let user = req.session.user
-  console.log(user)
-  var totalQuantity = 0;
+  let user = req.session.user;
+  console.log(user);
+  let totalQuantity = 0;
   if(req.session.user){
-    totalQuantity = await userHelpers.getCartCount(req.session.user.id);
+      totalQuantity = await userHelpers.getCartCount(req.session.user.id);
   }
 
-  productHelper.getAllProducts().then((allproducts) => { 
-    const products = allproducts.map(product => ({
-      _id:product._id,
+  productHelper.getAllProducts().then((allproducts) => {
+   
+    allproducts.forEach(product => {
+      // Add a flag to indicate Cloudinary image
+      product.isCloudinaryImage = product.image.startsWith('https://'); 
+    });
+
+    const products = allproducts.map((product, index) => ({
+      _id :product._id,
       name: product.name,
       category: product.category,
       description: product.description,
       image: product.image,
       price: product.price,
+      index: index + 1,
+      isCloudinaryImage: product.isCloudinaryImage // Include the flag in the mapped object
     }));
-    res.render('user/view-products', {admin: false, allproducts: products, status: req.status,user, totalQuantity});
-  }).catch((error) => {
-    console.error('Error fetching products:', error); 
-  });
+          res.render('user/view-products', { 
+              admin: false, 
+              allproducts: products, 
+              status: req.status, 
+              user, 
+              totalQuantity 
+          });
+      })
+      .catch((error) => {
+          console.error('Error fetching products:', error);
+          // Handle the error (e.g., render an error page)
+      });
 });
 
  
@@ -154,13 +174,29 @@ router.get('/login', (req, res) => {
 router.get('/verifyLogin', verifyLoggin, (req, res) => {
   res.sendStatus(200); // Send a success status if the user is logged in
 });
-
 router.get('/cart', verifyLoggin, async (req, res) => {
   var totalAmount = await userHelpers.getCartTotal(req.session.user.id); 
   var products = await userHelpers.getCartProducts(req.session.user.id);
   var totalQuantity = await userHelpers.getCartCount(req.session.user.id)
-console.log(totalAmount)
-  res.render('user/cart', { products,user:req.session.user,totalQuantity,totalAmount}); 
+  console.log(totalAmount)
+
+  // Add a flag to indicate Cloudinary image
+  products.forEach(product => {
+    product.isCloudinaryImage = product.image.startsWith('https://'); 
+  });
+
+  const mappedProducts = products.map((product, index) => ({
+    _id :product._id,
+    name: product.name,
+    category: product.category,
+    description: product.description,
+    image: product.image,
+    price: product.price,
+    index: index + 1,
+    isCloudinaryImage: product.isCloudinaryImage // Include the flag in the mapped object
+  }));
+
+  res.render('user/cart', { products: mappedProducts, user:req.session.user, totalQuantity, totalAmount }); 
 });
 
 router.get('/add-to-cart/:id', verifyLoggin, async (req, res) => {
@@ -279,12 +315,32 @@ router.post('/orders', verifyLoggin, async (req, res) => {
 
 
 
+// router.js
 router.get('/ordered-products', verifyLoggin, async function(req, res, next) {
-  
-
   var orders = await userHelpers.getOrdersByOrderId(req.query.id);
+ 
+  // Add a flag to indicate Local image for each product in the order
+  orders.products.forEach(product => {
+    product.isLocalImage = productHelper.isLocalImage(product.image);
+  });
+
+  const mappedProducts = orders.products.map((product, index) => ({
+    _id :product._id,
+    name: product.name,
+    category: product.category,
+    description: product.description,
+    image: product.image,
+    price: product.price,
+    index: index + 1,
+    isLocalImage: product.isLocalImage // Include the flag in the mapped object
+  }));
+
+  orders.products = mappedProducts;
+
   res.render('user/ordered-products', {orders, user: req.session.user});
 });
+
+
 
 
 router.post('/verify-payment', (req, res) => {

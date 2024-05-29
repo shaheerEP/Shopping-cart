@@ -10,8 +10,8 @@
       {{#each allproducts}}   
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 product" data-name="{{this.name}}" data-price="{{this.price}}" data-description="{{this.description}}" data-category="{{this.category}}"> 
           <div class="babycart-card" >
-            <img src="/product-images/{{this.image}}" class="babycart-card-img-top img-fluid" alt="Card image cap"> 
-          
+             <img src="{{#if this.isCloudinaryImage}}{{this.image}}{{else}}/product-images/{{this.image}}{{/if}}" class="babycart-card-img-top img-fluid" alt="Card image cap">
+           
               <div class="card-body">
                 <h5 class="babycart-product-title"> {{this.name}} </h5>
                 <p class="babycart-product-category " style="max-width: 300px;"> {{this.category}} </p>

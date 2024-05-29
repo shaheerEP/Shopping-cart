@@ -26,7 +26,7 @@
                   <td class="text-truncate" style="max-width: 200px;">{{this.description}}</td> 
                   <td>{{this.price}}</td>
                   <td> 
-                    <img src="/product-images/{{this.image}}" class="img-fluid" alt="Card image cap"> 
+                    <img src="{{#if this.isCloudinaryImage}}{{this.image}}{{else}}/product-images/{{this.image}}{{/if}}" class="babycart-card-img-top img-fluid" alt="Card image cap">
                   </td>
                   <td>
                     <a class="btn btn-primary" href="/admin/edit-product/{{this._id}}">Edit</a>

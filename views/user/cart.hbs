@@ -5,7 +5,8 @@
         {{#each products}}
             <div class="cart-item" id="product-row-{{this._id}}">
                 <div class="cart-item-image">
-                <img src="/product-images/{{this.image}}">
+                  
+                 <img src="{{#if this.isCloudinaryImage}}{{this.image}}{{else}}/product-images/{{this.image}}{{/if}}" class="babycart-card-img-top img-fluid" alt="Card image cap">
                 </div>
                 <div class="cart-item-details"> 
                     <h3>{{this.name}}</h3>
