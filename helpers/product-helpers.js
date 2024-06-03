@@ -53,8 +53,10 @@ const addProduct = async (productData)=> {
           }
         } catch (error) {
           console.error(error);
+          throw error; // Re-throw the error after logging it
         }
       };
+      
       
 
 const  getProductDetails = async (prodId) => {

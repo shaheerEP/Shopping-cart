@@ -4,37 +4,51 @@
 
         <form action="/admin/add-product" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="title">Name</label>
+                <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" name="name">
             </div>
             <div class="form-group">
-  <label for="price">Price</label>
-  <input type="text" class="form-control" id="price" name="price">
-</div>
-
+                <label for="price">Price</label>
+                <input type="text" class="form-control" id="price" name="price">
+            </div>
             <div class="form-group">
                 <label for="category">Category</label>
                 <input type="text" class="form-control" id="category" name="category">
             </div>
-            
             <div class="form-group">
                 <label for="description">Description</label>
                 <textarea class="form-control" id="description" name="description"></textarea>
             </div>
-             
-           <div class="form-group">
+            <div class="form-group">
                 <label for="image">Image</label>
                 <input type="file" class="form-control-file" id="image" name="image">
+                <img id="preview" src="#" alt="your image" style="display: none; height: 100px; object-fit: contain;"/>
             </div>
-            
-            <button  type="submit" class="btn btn-primary mt-2 ">Submit</button>
+            <button type="submit" class="btn btn-primary mt-2 ">Submit</button>
         </form>
-        <!-- Your table goes here -->
     </div>
 </section>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script>
  $(document).ready(function() {
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#preview').attr('src', e.target.result);
+                $('#preview').show();
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#image").change(function(){
+        readURL(this);
+    });
+
     $('form').on('submit', function(e) {
         if ($('#image').get(0).files.length === 0) {
             e.preventDefault();
@@ -42,5 +56,4 @@
         }
     });
 });
-
 </script>

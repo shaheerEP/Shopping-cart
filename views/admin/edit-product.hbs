@@ -28,32 +28,19 @@
       <input type="text" class="form-control" id="price" name="price" value="{{price}}">
     </div>
 
-<label for="image">Image (optional)</label>
-   <div class="form-group">
-
-  <img src="/product-images/{{image}}" class="" alt="Card image cap" style="height: 100px; object-fit: contain;" id="imgView">
-
-  <input type="file" class="form-control-file" id="image" name="image" onchange="viewImage(event)" >
-
-  <p class="text-muted">Leave blank to keep the current image.</p>
-</div>
-
+    <label for="image">Image (optional)</label>
+    <div class="form-group">
+      <img src="{{#if image}}{{image}}{{/if}}" alt="Product image" style="height: 100px; object-fit: contain;" id="imgView">
+      <input type="file" class="form-control-file" id="image" name="image" onchange="viewImage(event)">
+      <p class="text-muted">Leave blank to keep the current image.</p>
+    </div>
 
     <button type="submit" class="btn btn-primary">Save Changes</button>
   </form>
 </section>
 
 <script>
-
-function viewImage(event){          
-
- document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
- }  
-
-
-
+  function viewImage(event) {
+    document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0]);
+  }
 </script>
-
-
-
-                              

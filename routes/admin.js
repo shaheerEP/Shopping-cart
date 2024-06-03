@@ -126,38 +126,85 @@ router.get('/add-product',verifyLoggin, function(req, res, next) {
   res.render('admin/add-product', {admin: true});
 })
 
-
 router.post('/add-product', verifyLoggin, async (req, res) => {
-  console.log(req.files)
-  if (!req.files || Object.keys(req.files).length === 0) {
-      req.flash('error', 'No files were uploaded.');
-      return res.redirect('/add-product');
-  }
-
-  const productImage = req.files.image;
-  let imageName;
-
-  // Upload to Cloudinary regardless of the environment
   try {
-    console.log("hai",productImage.tempFilePath,"hai")
-    const result = await cloudinary.uploader.upload(productImage.tempFilePath, { folder: 'product-images' });
-    imageName = result.secure_url;
+    let productDetails = req.body;
     
+    if (req.files && req.files.image) {
+      let image = req.files.image;
+
+      cloudinary.uploader.upload(image.tempFilePath, async (err, result) => {
+        if (err) return res.status(500).send(err);
+
+        productDetails.image = result.secure_url;
+        await productHelpers.addProduct(productDetails);
+        res.redirect('/admin');
+      });
+    } else {
+      return res.status(400).send('Image is required');
+    }
   } catch (error) {
-    console.error("Error uploading image:", error); // Log the error for analysis
-    req.flash('error', 'There was a problem uploading the product image.');
-    return res.redirect('/add-product'); 
+    console.error(error);
+    res.status(500).send('Internal server error');
   }
+});
 
-  req.body.image = imageName; // Store the image path (Cloudinary URL)
 
+router.get('/edit-product/:id', verifyLoggin, async (req, res) => {
   try {
-    await productHelpers.addProduct(req.body);
-    res.redirect('/admin'); 
-  } catch (err) {
-    console.error("Error adding product to database:", err);
-    req.flash('error', 'There was a problem saving the product.');
-    return res.redirect('/add-product');
+    const productId = req.params.id;
+    const product = await productHelpers.getProductDetails(productId);
+
+    if (!product) {
+      return res.status(404).send('Product not found');
+    }
+
+    const viewData = Object.assign({}, product._doc, {admin: true});
+    console.log(viewData, "hai");
+    res.render('admin/edit-product', viewData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+
+router.post('/edit-product/:id', verifyLoggin, async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const oldProductDetails = await productHelpers.getProductDetails(productId);
+    let productDetails = req.body;
+
+    if (req.files && req.files.image) {
+      let image = req.files.image;
+      let timestamp = Date.now();
+      let imageName = timestamp + '_' + image.name;
+
+      // Check if the old image is in local storage and delete it
+      if (oldProductDetails.image && !oldProductDetails.image.startsWith('http')) {
+        let oldImagePath = path.join(__dirname, 'public', 'product-images', oldProductDetails.image);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+
+      // Upload new image to Cloudinary
+      cloudinary.uploader.upload(image.tempFilePath, { public_id: imageName }, (err, result) => {
+        if (err) return res.status(500).send(err);
+
+        productDetails.image = result.secure_url;
+        productHelpers.updateProduct(productId, productDetails).then(() => {
+          res.redirect('/admin');
+        });
+      });
+    } else {
+      productHelpers.updateProduct(productId, productDetails).then(() => {
+        res.redirect('/admin');
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
   }
 });
 
@@ -166,45 +213,45 @@ router.post('/add-product', verifyLoggin, async (req, res) => {
 
 router.get('/delete-product/:id', verifyLoggin, async (req, res) => {
   try {
-      const prodId = req.params.id;
+    const prodId = req.params.id;
 
-      if (!req.session.adminLoggedin) {
-          return res.status(403).json({ success: false, error: 'Unauthorized access' });
+    if (!req.session.adminLoggedin) {
+      return res.status(403).json({ success: false, error: 'Unauthorized access' });
+    }
+
+    // Fetch the product details (including the image URL) from the database
+    const product = await productHelpers.getProductDetails(prodId);
+    console.log('Fetched product details:', product);
+
+    if (!product) {
+      req.flash('error', 'Product not found');
+      return res.redirect('/admin');
+    }
+    console.log('Delete product route hit, id:', prodId);
+
+    // Delete product from the database
+    await productHelpers.deleteProduct(prodId);
+
+    // Delete the image from the local file system
+    fs.unlink(path.join(__dirname, '/public/product-images', product.image), (error) => {
+      if (error) {
+        console.error('Error deleting image from local file system:', error);
+        req.flash('error', 'Error deleting image from local file system'); // Add flash message for error
+      } else {
+        console.log('Image deleted from local file system');
+        req.flash('success', 'Product and image deleted successfully'); // Add flash message for success
       }
 
-      // Fetch the product details (including the image URL) from the database
-      const product = await productHelpers.getProductDetails(prodId);
-
-      if (!product) {
-          req.flash('error', 'Product not found');
-          return res.redirect('/admin');
-      }
-
-      // Extract the Cloudinary public ID from the image URL
-      const publicId = product.image.match(/\/product-images\/([^.]+)/)[1]; // Assuming 'product-images' is your Cloudinary folder
-  
-      // Delete product from the database
-      await productHelpers.deleteProduct(prodId);
-
-      // Delete the image from Cloudinary
-      cloudinary.uploader.destroy('product-images/' + publicId, (error, result) => {
-          if (error) {
-              console.error('Error deleting image from Cloudinary:', error);
-              req.flash('error', 'Error deleting image from Cloudinary'); // Add flash message for error
-          } else {
-              console.log('Image deleted from Cloudinary:', result);
-              req.flash('success', 'Product and image deleted successfully'); // Add flash message for success
-          }
-
-          res.redirect('/admin');
-      });
+      res.redirect('/admin');
+    });
 
   } catch (error) {
-      console.error('Error in delete-product route:', error);
-      req.flash('error', 'Error deleting product'); // General error message for other errors
-      res.redirect('/admin');
+    console.error('Error in delete-product route:', error);
+    req.flash('error', 'Error deleting product'); // General error message for other errors
+    res.redirect('/admin');
   }
 });
+
 
 router.get('/edit-product/:id', verifyLoggin, async (req, res) => {
   try {
@@ -212,44 +259,46 @@ router.get('/edit-product/:id', verifyLoggin, async (req, res) => {
     const product = await productHelpers.getProductDetails(productId);
 
     if (!product) {
-      return res.status(404).send('Product not found'); // Handle non-existent product
+      return res.status(404).send('Product not found');
     }
 
-    // Merge product and {admin: true} into a single object
-    const viewData = Object.assign({}, product, {admin: true});
-
-    res.render('admin/edit-product', viewData); // Render template with product data
-    console.log(product)
-  } catch (error) { 
+    const viewData = Object.assign({}, product._doc, {admin: true});
+    console.log(viewData, "hai");
+    res.render('admin/edit-product', viewData);
+  } catch (error) {
     console.error(error);
-    res.status(500).send('Internal server error'); // Handle errors gracefully
+    res.status(500).send('Internal server error');
   }
 });
 
 
-router.post('/edit-product/:id',verifyLoggin,(req,res)=>{
-  console.log(req.params.id,req.body)
+
+router.post('/edit-product/:id', verifyLoggin, (req, res) => {
+  console.log(req.params.id, req.body);
   let productDetails = req.body;
-  if(req.files && req.files.image){
+
+  if (req.files && req.files.image) {
     let image = req.files.image;
     let uploadDir = './public/product-images/';
     let timestamp = Date.now();
     let imageName = timestamp + '_' + image.name;
-  
+
     image.mv(uploadDir + imageName, function(err) {
-      if (err)
-        return res.status(500).send(err);
+      if (err) return res.status(500).send(err);
       productDetails.image = imageName;
-      productHelpers.updateProduct(req.params.id, productDetails).then(()=>{
-        res.redirect('/admin')
+      productHelpers.updateProduct(req.params.id, productDetails).then(() => {
+        console.log("hai...");
+        res.redirect('/admin');
       });
     });
   } else {
-    productHelpers.updateProduct(req.params.id, productDetails).then(()=>{ 
-      res.redirect('/admin')
+    productHelpers.updateProduct(req.params.id, productDetails).then(() => {
+      res.redirect('/admin');
     });
   }
-})
+});
+
+
 
 
 
