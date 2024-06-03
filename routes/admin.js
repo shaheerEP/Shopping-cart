@@ -302,7 +302,6 @@ router.post('/edit-product/:id', verifyLoggin, (req, res) => {
 
 
 
-
 router.get('/orders', verifyLoggin, async (req, res) => {
   try {
       const orders = await Order.aggregate([
@@ -320,6 +319,13 @@ router.get('/orders', verifyLoggin, async (req, res) => {
           }
       ]);
 
+      // Add a flag to indicate Cloudinary image
+      orders.forEach(order => {
+        order.products.forEach(product => {
+          product.isCloudinaryImage = product.image.startsWith('https://');
+        });
+      });
+
       res.render('admin/orders', { admin: true, orders: orders }, function(err, html) {
           if (err) {
               // handle error
@@ -333,6 +339,7 @@ router.get('/orders', verifyLoggin, async (req, res) => {
       res.status(500).send('Server Error');
   }
 });
+
 
 router.get('/users', verifyLoggin, async (req, res) => {
   let users = await adminHelpers.getAllUsers(); 
