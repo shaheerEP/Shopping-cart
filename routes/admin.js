@@ -126,28 +126,37 @@ router.get('/add-product',verifyLoggin, function(req, res, next) {
   res.render('admin/add-product', {admin: true});
 })
 
+// routes/admin.js
 router.post('/add-product', verifyLoggin, async (req, res) => {
   try {
     let productDetails = req.body;
-    
+    console.log('Received product details:', productDetails);
+
     if (req.files && req.files.image) {
       let image = req.files.image;
+      console.log('Received image file:', image);
 
       cloudinary.uploader.upload(image.tempFilePath, async (err, result) => {
-        if (err) return res.status(500).send(err);
+        if (err) {
+          console.error('Error uploading image to Cloudinary:', err);
+          return res.status(500).send(err);
+        }
 
+        console.log('Image uploaded to Cloudinary:', result);
         productDetails.image = result.secure_url;
         await productHelpers.addProduct(productDetails);
         res.redirect('/admin');
       });
     } else {
+      console.log('No image provided');
       return res.status(400).send('Image is required');
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error adding product:', error);
     res.status(500).send('Internal server error');
   }
 });
+
 
 
 router.get('/edit-product/:id', verifyLoggin, async (req, res) => {
