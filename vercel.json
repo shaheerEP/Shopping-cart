@@ -7,10 +7,10 @@
     { "src": "/(.*)", "dest": "app.js" }
   ],  
     "env": {
-        "DATABASE_URL": "mongodb+srv://shaheer:92NHeersdatabase.irkcohe.mongodb.net/?retryWrites=true&w=majority&appName=shaheersdatabase"
+        "DATABASE_URL": "mongodb+srv://shaheer:92NHxUOtie7fNwla@shaheersdatabase.irkcohe.mongodb.net/?retryWrites=true&w=majority&appName=shaheersdatabase"
         ,
-        "RAZORPAY_KEY": "rzp_test59fkONw",
-        "RAZORPAY_SECRET": "xdl8Nqc2gxAdDXz7"  
+        "RAZORPAY_KEY": "rzp_test_8wAewDo59fkONw",
+        "RAZORPAY_SECRET": "xdl8Nqc2KLweY5qYgxAdDXz7"  
     }
 }
   
