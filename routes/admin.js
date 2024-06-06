@@ -139,21 +139,37 @@ router.post('/add-product', verifyLoggin, async (req, res) => {
       cloudinary.uploader.upload(image.tempFilePath, async (err, result) => {
         if (err) {
           console.error('Error uploading image to Cloudinary:', err);
-          return res.status(500).send(err);
+          return res.status(500).json({ 
+            error: true, 
+            message: 'Error uploading image to Cloudinary' 
+          });
         }
 
         console.log('Image uploaded to Cloudinary:', result);
         productDetails.image = result.secure_url;
-        await productHelpers.addProduct(productDetails);
+        const newProduct = await productHelpers.addProduct(productDetails); 
+        if (newProduct.code === 'duplicate') {
+          return res.status(400).json({ 
+            error: true, 
+            message: newProduct.message 
+          });
+        }
+
         res.redirect('/admin');
       });
     } else {
       console.log('No image provided');
-      return res.status(400).send('Image is required');
+      return res.status(400).json({ 
+        error: true, 
+        message: 'Image is required' 
+      });
     }
   } catch (error) {
     console.error('Error adding product:', error);
-    res.status(500).send('Internal server error');
+    res.status(500).json({ 
+        error: true, 
+        message: 'Internal Server Error' 
+    });
   }
 });
 
@@ -310,7 +326,6 @@ router.post('/edit-product/:id', verifyLoggin, (req, res) => {
 
 
 
-
 router.get('/orders', verifyLoggin, async (req, res) => {
   try {
       const orders = await Order.aggregate([
@@ -335,6 +350,9 @@ router.get('/orders', verifyLoggin, async (req, res) => {
         });
       });
 
+      // Reverse the orders array
+      orders.reverse();
+
       res.render('admin/orders', { admin: true, orders: orders }, function(err, html) {
           if (err) {
               // handle error
@@ -350,6 +368,7 @@ router.get('/orders', verifyLoggin, async (req, res) => {
 });
 
 
+
 router.get('/users', verifyLoggin, async (req, res) => {
   let users = await adminHelpers.getAllUsers(); 
   console.log(users)
@@ -361,7 +380,16 @@ router.get('/orders/details/:userId', verifyLoggin, async (req, res) => {
       const user = await User.findById(req.params.userId);
       const paidOrders = await Order.find({ userId: req.params.userId, status: 'paid' });
       const placedOrders = await Order.find({ userId: req.params.userId, status: 'placed' });
-   
+
+      // Add a flag to indicate Cloudinary image
+      [paidOrders, placedOrders].forEach(orders => {
+        orders.forEach(order => {
+          order.products.forEach(product => {
+            product.isCloudinaryImage = product.image.startsWith('https://');
+          });
+        });
+      });
+
       res.render('admin/order-details', { user: user, paidOrders: paidOrders, placedOrders: placedOrders ,admin: true,userName: user.name}, function(err, html) {
           if (err) {
               // handle error
@@ -375,6 +403,8 @@ router.get('/orders/details/:userId', verifyLoggin, async (req, res) => {
       res.status(500).send('Server Error');
   }
 });
+
+
 
 router.get('/orders/print/:orderId', verifyLoggin, async (req, res) => {
   try {

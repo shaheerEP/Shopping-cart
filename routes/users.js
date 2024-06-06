@@ -237,11 +237,16 @@ router.get('/get-cart-total', verifyLoggin, async (req, res) => {
   }
 });
 
-router.get('/place-order',verifyLoggin,async function(req, res, next) {
+router.get('/place-order', verifyLoggin, async function(req, res, next) {
   var totalAmount = await userHelpers.getCartTotal(req.session.user.id);
   console.log(req.session.user)
+  if(totalAmount === 0){
+    res.redirect('/');
+    return;
+  }
   res.render('user/place-order',{totalAmount,user:req.session.user});
 })
+
 router.get('/order-success',verifyLoggin,async function(req, res, next) {
   await userHelpers.removeFromCart(req.session.user.id); 
   
@@ -249,7 +254,6 @@ router.get('/order-success',verifyLoggin,async function(req, res, next) {
 })
 router.get('/orders', verifyLoggin, async function(req, res, next) {
   try {
-    
     var orders = await userHelpers.getOrdersByUserId(req.session.user.id);
     if (orders) {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
@@ -257,7 +261,10 @@ router.get('/orders', verifyLoggin, async function(req, res, next) {
         order.submittedAt = order.submittedAt.toLocaleString("en-IN", options);
         return order;
       });
-       
+
+      // Reverse the order array
+      orders = orders.reverse();
+
       console.log(orders);
       res.render('user/orders', {  orders,user:req.session.user });
     }
@@ -266,6 +273,7 @@ router.get('/orders', verifyLoggin, async function(req, res, next) {
     next(error);
   }
 });
+
 
 router.get('/online-payment',verifyLoggin,async function(req, res, next) {
   var totalAmount = await userHelpers.getCartTotal(req.session.user.id);

@@ -14,7 +14,8 @@
         {{#each this.products}}
         <div class="col-sm-4 product">
             <div class="card">
-                <img src="/product-images/{{this.image}}" class="card-img-top" alt="Card image cap" style="height: 200px; object-fit: contain;">
+                <img src="{{#if this.isCloudinaryImage}}{{this.image}}{{else}}/product-images/{{this.image}}{{/if}}" class="card-img-top" alt="Card image cap" style="height: 200px; object-fit: contain;">
+
                 <div class="card-body">
                     <h5 class="card-title name">{{this.name}}</h5>
                     <p class="card-text quantity">Quantity: {{this.quantity}}</p>
@@ -40,7 +41,8 @@
         {{#each this.products}}
         <div class="col-sm-4 product">
             <div class="card">
-                <img src="/product-images/{{this.image}}" class="card-img-top" alt="Card image cap" style="height: 200px; object-fit: contain;">
+               <img src="{{#if this.isCloudinaryImage}}{{this.image}}{{else}}/product-images/{{this.image}}{{/if}}" class="card-img-top" alt="Card image cap" style="height: 200px; object-fit: contain;">
+
                 <div class="card-body">
                     <h5 class="card-title name">{{this.name}}</h5>
                     <p class="card-text quantity">Quantity: {{this.quantity}}</p>

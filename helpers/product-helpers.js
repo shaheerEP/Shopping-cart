@@ -16,19 +16,23 @@ const productSchema = new mongoose.Schema({
 const Product = mongoose.model('Product', productSchema);
 
 
-const addProduct = async (productData)=> {
-        try {
-          const existingProduct = await Product.findOne({ name: productData.name });
-          if (!existingProduct) {
-            const newProduct = await Product.create(productData);
-            console.log(`Product "${newProduct.name}" added successfully!`);
-          } else {
-            console.log(`Product "${productData.name}" already exists. Skipping insertion.`);
-          }
-        } catch (error) {
-          console.error('Error adding product:', error);
-        }
-      }
+const addProduct = async (productData) => {
+  try {
+    const existingProduct = await Product.findOne({ name: productData.name });
+    if (!existingProduct) {
+      const newProduct = await Product.create(productData);
+      console.log(`Product "${newProduct.name}" added successfully!`);
+      return newProduct; // Return the new product 
+    } else {
+      const error = new Error(`Product "${productData.name}" already exists.`);
+      error.code = 'duplicate'; // Add a custom error code
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error adding product:', error);
+    throw error; // Rethrow the error to be handled by the route handler
+  }
+};
 
       const getAllProducts = async () => {
         try {
